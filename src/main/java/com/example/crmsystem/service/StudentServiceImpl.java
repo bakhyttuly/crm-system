@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Service
-public class StudentService {
+public class StudentServiceImpl extends StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
@@ -40,12 +40,14 @@ public class StudentService {
         return student;
     }
 
+    @Override
     public StudentDTO createStudent(StudentDTO studentDTO) {
         Student student = toEntity(studentDTO);
         Student savedStudent = studentRepository.save(student);
         return toDto(savedStudent);
     }
 
+    @Override
     public List<StudentDTO> getAllStudents() {
         List<Student> students = studentRepository.findAll();
         List<StudentDTO> dtos = new ArrayList<>();
@@ -55,12 +57,14 @@ public class StudentService {
         return dtos;
     }
 
+    @Override
     public StudentDTO getStudentById(Long id) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
         return toDto(student);
     }
 
+    @Override
     public StudentDTO updateStudent(Long id, StudentDTO studentDTO) {
         Student existingStudent = studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
@@ -76,6 +80,7 @@ public class StudentService {
         return toDto(updatedStudent);
     }
 
+    @Override
     public void deleteStudent(Long id) {
         if (!studentRepository.existsById(id)) {
             throw new RuntimeException("Student not found with id: " + id);
