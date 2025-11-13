@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Service
-public class StudentServiceImpl extends StudentService {
+public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
 
-    private StudentDTO toDto(Student student) {
+    @Override
+    public StudentDTO toDto(Student student) {
         if (student == null) return null;
         StudentDTO dto = new StudentDTO();
         dto.setId(student.getId());
@@ -27,7 +28,8 @@ public class StudentServiceImpl extends StudentService {
         return dto;
     }
 
-    private Student toEntity(StudentDTO dto) {
+    @Override
+    public Student toEntity(StudentDTO dto) {
         if (dto == null) return null;
         Student student = new Student();
         student.setId(dto.getId());
@@ -59,15 +61,13 @@ public class StudentServiceImpl extends StudentService {
 
     @Override
     public StudentDTO getStudentById(Long id) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+        Student student = studentRepository.findById(id).orElse(null);
         return toDto(student);
     }
 
     @Override
     public StudentDTO updateStudent(Long id, StudentDTO studentDTO) {
-        Student existingStudent = studentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+        Student existingStudent = studentRepository.findById(id).orElse(null);
 
         existingStudent.setFirstName(studentDTO.getFirstName());
         existingStudent.setLastName(studentDTO.getLastName());
@@ -81,10 +81,9 @@ public class StudentServiceImpl extends StudentService {
     }
 
     @Override
-    public void deleteStudent(Long id) {
-        if (!studentRepository.existsById(id)) {
-            throw new RuntimeException("Student not found with id: " + id);
-        }
-        studentRepository.deleteById(id);
+    public boolean deleteStudent(Long id) {
+        Student student = studentRepository.findById(id).orElse(null);
+        studentRepository.delete(student);
+        return true;
     }
 }
