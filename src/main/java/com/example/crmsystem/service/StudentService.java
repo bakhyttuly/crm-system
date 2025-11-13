@@ -7,19 +7,16 @@ import java.util.List;
 
 @Service
 public interface StudentService {
+     StudentDTO toDto(Student student);
 
+     Student toEntity(StudentDTO dto);
 
+     StudentDTO createStudent(StudentDTO studentDTO);
+     List<StudentDTO> getAllStudents();
 
-     StudentDTO toDto(Student student) ;
+     StudentDTO getStudentById(Long id);
 
-     Student toEntity(StudentDTO dto) ;
+     StudentDTO updateStudent(Long id, StudentDTO studentDTO);
 
-     StudentDTO createStudent(StudentDTO studentDTO) ;
-     List<StudentDTO> getAllStudents() ;
-
-     StudentDTO getStudentById(Long id) ;
-
-     StudentDTO updateStudent(Long id, StudentDTO studentDTO) ;
-
-    boolean deleteStudent(Long id) ;
+    boolean deleteStudent(Long id);
 }
