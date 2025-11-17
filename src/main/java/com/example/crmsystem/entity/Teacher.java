@@ -6,12 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "students")
+@Table(name = "teachers")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student {
+
+public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,21 +24,8 @@ public class Student {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false)
-    private String email;
+    private String subject;
 
-    @Column(nullable = false)
-    private String major;
-
-    private Integer semester;
-
-    private Double gpa;
-
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
-
-
-    @ManyToMany(mappedBy = "students")
-    private Set<Teacher> teachers = new HashSet<>();
+    @ManyToMany
+    private Set<Student> students = new HashSet<>();
 }

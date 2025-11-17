@@ -19,20 +19,19 @@ repositories {
 }
 
 dependencies {
-	// Spring Boot Starter Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-	// Spring Boot Starter Data JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-	// PostgreSQL Driver
 	runtimeOnly 'org.postgresql:postgresql'
 
-	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// Spring Boot Starter Test
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
