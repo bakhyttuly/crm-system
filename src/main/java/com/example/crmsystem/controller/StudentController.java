@@ -30,6 +30,9 @@ public class StudentController {
     @GetMapping("/{id}")
     public ResponseEntity<StudentDTO> getStudentById(@PathVariable Long id) {
         StudentDTO student = studentService.getStudentById(id);
+        if (student == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 если не найдено
+        }
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
@@ -38,12 +41,18 @@ public class StudentController {
             @PathVariable Long id,
             @RequestBody StudentDTO studentDTO) {
         StudentDTO updatedStudent = studentService.updateStudent(id, studentDTO);
+        if (updatedStudent == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 если не найдено
+        }
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
-        studentService.deleteStudent(id);
+        boolean deleted = studentService.deleteStudent(id);
+        if (!deleted) {
+            return new ResponseEntity<>("Student not found!", HttpStatus.NOT_FOUND); // 404 если не найдено
+        }
         return new ResponseEntity<>("Student successfully deleted!", HttpStatus.OK);
     }
 }
