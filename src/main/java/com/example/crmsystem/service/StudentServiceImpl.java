@@ -2,88 +2,99 @@ package com.example.crmsystem.service;
 
 import com.example.crmsystem.dto.StudentDTO;
 import com.example.crmsystem.entity.Student;
+import com.example.crmsystem.entity.Teacher;
 import com.example.crmsystem.repository.StudentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.crmsystem.repository.TeacherRepository;
+import com.example.crmsystem.mapper.StudentMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.HashSet; // 💡 2. Добавлен импорт
+import java.util.Objects;
+import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
+    private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
+    private final TeacherRepository teacherRepository;
 
-    @Autowired
-    private StudentRepository studentRepository;
+    private void setTeacherRelationships(Student student, List<Long> teacherIds) {
+        if (teacherIds != null && !teacherIds.isEmpty()) {
 
-    @Override
-    public StudentDTO toDto(Student student) {
-        if (student == null) return null;
-        StudentDTO dto = new StudentDTO();
-        dto.setId(student.getId());
-        dto.setFirstName(student.getFirstName());
-        dto.setLastName(student.getLastName());
-        dto.setEmail(student.getEmail());
-        dto.setMajor(student.getMajor());
-        dto.setSemester(student.getSemester());
-        dto.setGpa(student.getGpa());
-        return dto;
-    }
+            List<Teacher> teachers = teacherRepository.findAllById(teacherIds);
 
-    @Override
-    public Student toEntity(StudentDTO dto) {
-        if (dto == null) return null;
-        Student student = new Student();
-        student.setId(dto.getId());
-        student.setFirstName(dto.getFirstName());
-        student.setLastName(dto.getLastName());
-        student.setEmail(dto.getEmail());
-        student.setMajor(dto.getMajor());
-        student.setSemester(dto.getSemester());
-        student.setGpa(dto.getGpa());
-        return student;
+
+            Set<Teacher> teacherSet = new HashSet<>(teachers);
+            student.setTeachers(teacherSet);
+
+        } else {
+            student.setTeachers(new HashSet<>());
+        }
     }
 
     @Override
     public StudentDTO createStudent(StudentDTO studentDTO) {
-        Student student = toEntity(studentDTO);
+        Student student = studentMapper.toEntity(studentDTO);
+
+        setTeacherRelationships(student, studentDTO.getTeacherIds());
+
         Student savedStudent = studentRepository.save(student);
-        return toDto(savedStudent);
+        return studentMapper.toDto(savedStudent);
     }
 
     @Override
     public List<StudentDTO> getAllStudents() {
         List<Student> students = studentRepository.findAll();
-        List<StudentDTO> dtos = new ArrayList<>();
-        for (Student student : students) {
-            dtos.add(toDto(student));
-        }
-        return dtos;
+        return studentMapper.toDtoList(students);
     }
 
     @Override
     public StudentDTO getStudentById(Long id) {
         Student student = studentRepository.findById(id).orElse(null);
-        return toDto(student);
+        if(Objects.isNull(student)){
+            return null;
+        }
+        return studentMapper.toDto(student);
     }
 
     @Override
     public StudentDTO updateStudent(Long id, StudentDTO studentDTO) {
-        Student existingStudent = studentRepository.findById(id).orElse(null);
+        StudentDTO checkStudent = getStudentById(id);
+        if(Objects.isNull(checkStudent)){
+            return null;
+        }
 
-        existingStudent.setFirstName(studentDTO.getFirstName());
-        existingStudent.setLastName(studentDTO.getLastName());
-        existingStudent.setEmail(studentDTO.getEmail());
-        existingStudent.setMajor(studentDTO.getMajor());
-        existingStudent.setSemester(studentDTO.getSemester());
-        existingStudent.setGpa(studentDTO.getGpa());
+        Student existingStudent = studentRepository.findById(id).orElse(null);
+        if (existingStudent == null) return null;
+
+
+        Student studentToUpdate = studentMapper.toEntity(studentDTO);
+
+        existingStudent.setFirstName(studentToUpdate.getFirstName());
+        existingStudent.setLastName(studentToUpdate.getLastName());
+        existingStudent.setEmail(studentToUpdate.getEmail());
+        existingStudent.setMajor(studentToUpdate.getMajor());
+        existingStudent.setSemester(studentToUpdate.getSemester());
+        existingStudent.setGpa(studentToUpdate.getGpa());
+
+        existingStudent.setCourse(studentToUpdate.getCourse());
+
+
+        setTeacherRelationships(existingStudent, studentDTO.getTeacherIds());
 
         Student updatedStudent = studentRepository.save(existingStudent);
-        return toDto(updatedStudent);
+        return studentMapper.toDto(updatedStudent);
     }
 
     @Override
     public boolean deleteStudent(Long id) {
-        Student student = studentRepository.findById(id).orElse(null);
-        studentRepository.delete(student);
+        StudentDTO checkStudent = getStudentById(id);
+        if(Objects.isNull(checkStudent)){
+            return false;
+        }
+        studentRepository.deleteById(id);
         return true;
     }
 }

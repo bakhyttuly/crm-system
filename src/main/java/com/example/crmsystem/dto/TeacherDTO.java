@@ -3,21 +3,16 @@ package com.example.crmsystem.dto;
 import lombok.*;
 import java.util.List;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentDTO {
-
+public class TeacherDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private String email;
-    private String major;
-    private Integer semester;
-    private Double gpa;
+    private String subject;
 
-    private Long courseId;
-    private List<Long> teacherIds;
+    private List<Long> studentIds;
 }
-
