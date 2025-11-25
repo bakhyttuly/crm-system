@@ -31,7 +31,7 @@ public class CourseController {
     public ResponseEntity<CourseDTO> getCourseById(@PathVariable Long id) {
         CourseDTO course = courseService.getCourseById(id);
         if (course == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 если не найдено
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
@@ -42,7 +42,7 @@ public class CourseController {
             @RequestBody CourseDTO courseDTO) {
         CourseDTO updatedCourse = courseService.updateCourse(id, courseDTO);
         if (updatedCourse == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 если не найдено
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(updatedCourse, HttpStatus.OK);
     }
@@ -51,7 +51,7 @@ public class CourseController {
     public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
         boolean deleted = courseService.deleteCourse(id);
         if (!deleted) {
-            return new ResponseEntity<>("Course not found!", HttpStatus.NOT_FOUND); // 404 если не найдено
+            return new ResponseEntity<>("Course not found!", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Course successfully deleted!", HttpStatus.OK);
     }

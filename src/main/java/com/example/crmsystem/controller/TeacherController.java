@@ -31,7 +31,7 @@ public class TeacherController {
     public ResponseEntity<TeacherDTO> getTeacherById(@PathVariable Long id) {
         TeacherDTO teacher = teacherService.getTeacherById(id);
         if (teacher == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 если не найдено
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(teacher, HttpStatus.OK);
     }
@@ -42,7 +42,7 @@ public class TeacherController {
             @RequestBody TeacherDTO teacherDTO) {
         TeacherDTO updatedTeacher = teacherService.updateTeacher(id, teacherDTO);
         if (updatedTeacher == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 если не найдено
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(updatedTeacher, HttpStatus.OK);
     }
@@ -51,7 +51,7 @@ public class TeacherController {
     public ResponseEntity<String> deleteTeacher(@PathVariable Long id) {
         boolean deleted = teacherService.deleteTeacher(id);
         if (!deleted) {
-            return new ResponseEntity<>("Teacher not found!", HttpStatus.NOT_FOUND); // 404 если не найдено
+            return new ResponseEntity<>("Teacher not found!", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Teacher successfully deleted!", HttpStatus.OK);
     }
